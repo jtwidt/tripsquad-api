@@ -9,7 +9,9 @@
         "format:check": "prettier --check .",
         "format:write": "prettier --write .",
         "lint:check": "eslint .",
-        "lint:fix": "eslint --fix ."
+        "lint:fix": "eslint --fix .",
+        "db:start": "npx sequelize-cli db:create && npx sequelize-cli db:migrate",
+        "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate"
     },
     "repository": {
         "type": "git",

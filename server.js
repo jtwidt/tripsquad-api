@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 
 // Developer defined files
+const db = require('./models');
 const trips = require('./routes/trips');
 const flights = require('./routes/flights');
 const hotels = require('./routes/hotels');
@@ -14,6 +15,15 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+db.sequelize
+    .sync()
+    .then(() => {
+        console.log('Synced db.');
+    })
+    .catch((err) => {
+        console.log('Failed to sync db: ' + err.message);
+    });
 
 app.get('/', (req, res) => {
     res.send('Welcome to the TripSquad API');
