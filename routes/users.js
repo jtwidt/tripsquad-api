@@ -10,11 +10,12 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     // Get the user inputs from the body of the request
     const user = req.body;
-    const newUser = createUser(user);
+    const newUser = await createUser(user);
     if (newUser !== 400) {
+        console.log(newUser);
         const jwtToken = jwt.sign(
             { email: newUser.email, userId: newUser.id },
             process.env.JWT_SECRET,

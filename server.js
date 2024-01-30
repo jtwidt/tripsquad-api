@@ -1,6 +1,7 @@
 // External packages
 const express = require('express');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 
 // Developer defined files
 const db = require('./models');
@@ -24,6 +25,8 @@ db.sequelize
     .catch((err) => {
         console.log('Failed to sync db: ' + err.message);
     });
+
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Welcome to the TripSquad API');
