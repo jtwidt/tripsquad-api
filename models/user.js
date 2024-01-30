@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
@@ -13,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.init(
         {
-            firstName: { type: DataTypes.STRING, allowNull: false },
-            lastName: { type: DataTypes.STRING, allowNull: false },
+            id: DataTypes.STRING,
+            firstName: DataTypes.STRING,
+            lastName: DataTypes.STRING,
             email: DataTypes.STRING,
+            password: DataTypes.STRING,
             address1: DataTypes.STRING,
             address2: DataTypes.STRING,
             city: DataTypes.STRING,
