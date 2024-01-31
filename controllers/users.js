@@ -47,6 +47,64 @@ const createUser = async (userInfo) => {
     }
 };
 
+const getUser = async (userId) => {
+    const user = await User.findOne({
+        attributes: { exclude: ['password'] },
+        where: {
+            id: userId,
+        },
+    });
+    if (user) {
+        return user;
+    } else {
+        return 404;
+    }
+};
+
+const updateUser = async (userId, userInfo) => {
+    let validEmail;
+    const validId = await User.findOne({
+        where: {
+            id: userId,
+        },
+    });
+
+    if (validId) {
+        if (userInfo.email) {
+            validEmail = await User.findOne({
+                where: {
+                    email: userInfo.email,
+                },
+            });
+
+            if (validEmail) {
+                return 400;
+            }
+        }
+
+        const updatedUser = await User.update(userInfo, {
+            where: { id: userId },
+        });
+        return updatedUser;
+    } else {
+        return 404;
+    }
+};
+
+const deleteUser = async (userId) => {
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (user) {
+        await User.destroy({ where: { id: userId } });
+        return 200;
+    } else {
+        return 404;
+    }
+};
+
 module.exports = {
     createUser,
+    getUser,
+    updateUser,
+    deleteUser,
 };
