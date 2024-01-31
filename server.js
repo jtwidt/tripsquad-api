@@ -2,6 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // Developer defined files
 const db = require('./models');
@@ -11,6 +12,7 @@ const hotels = require('./routes/hotels');
 const activities = require('./routes/activities');
 const food = require('./routes/food');
 const users = require('./routes/users');
+const { login } = require('./controllers/auth');
 
 dotenv.config();
 
@@ -26,10 +28,24 @@ db.sequelize
         console.log('Failed to sync db: ' + err.message);
     });
 
+app.use(cors());
 app.use(bodyParser.json());
+app.disable('x-powered-by');
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the TripSquad API');
+    return res.send('Welcome to the TripSquad API');
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const token = await login(email, password);
+    if (token === 401) {
+        return res
+            .status(401)
+            .send({ message: 'Invalid email or password. Please try again.' });
+    } else {
+        return res.status(200).send(token);
+    }
 });
 
 app.use('/trips', trips);
