@@ -1,20 +1,29 @@
-import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
+import express, { Express, Request, Response } from 'express';
+import * as dotenv from 'dotenv';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 
-AppDataSource.initialize().then(async () => {
+import { AppDataSource } from './data-source';
 
-    console.log("Inserting a new user into the database...")
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id: " + user.id)
+dotenv.config();
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
+AppDataSource.initialize()
+    .then(async () => {
+        const app: Express = express();
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
+        app.use(cors());
+        app.use(bodyParser.json());
 
-}).catch(error => console.log(error))
+        const port = process.env.PORT || 3001;
+
+        app.get('/', (req: Request, res: Response) => {
+            return res
+                .status(200)
+                .send({ message: `Welcome to the TripSquad API` });
+        });
+
+        app.listen(port, () => {
+            console.log(`[server]: Tripsquad API listening on port ${port}`);
+        });
+    })
+    .catch((error) => console.log(error));
