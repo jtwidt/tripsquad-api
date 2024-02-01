@@ -20,10 +20,14 @@
   },
   "homepage": "https://github.com/jtwidt/tripsquad-api#readme",
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.5",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "0.3.20"
