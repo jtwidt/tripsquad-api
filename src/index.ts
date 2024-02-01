@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
+import cors from 'cors';
 
 import { AppDataSource } from './data-source';
 
