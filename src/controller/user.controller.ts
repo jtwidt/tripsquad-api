@@ -37,18 +37,6 @@ export const registerUser = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     const id = req.params.id;
     const user = await AppDataSource.manager.find(User, {
-        select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            address1: true,
-            address2: true,
-            city: true,
-            state: true,
-            country: true,
-            postCode: true,
-        },
         where: { id: id },
     });
     if (!user) {
@@ -60,20 +48,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const users = await AppDataSource.manager.find(User, {
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                address1: true,
-                address2: true,
-                city: true,
-                state: true,
-                country: true,
-                postCode: true,
-            },
-        });
+        const users = await AppDataSource.manager.find(User);
         return res.status(200).json({ users: users });
     } catch (error) {
         return res.status(500).send({ message: 'Internal Server Error' });
