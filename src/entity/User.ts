@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    ManyToMany,
+} from 'typeorm';
 import { Trip } from './Trip';
 
 @Entity()
@@ -38,4 +44,7 @@ export class User {
 
     @OneToMany(() => Trip, (trip) => trip.creator)
     createdTrips: Trip[];
+
+    @ManyToMany(() => Trip, (trip) => trip.attendees)
+    attendedTrips: Trip[];
 }

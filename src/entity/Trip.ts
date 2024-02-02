@@ -5,6 +5,7 @@ import {
     ManyToOne,
     ManyToMany,
     JoinTable,
+    JoinColumn,
 } from 'typeorm';
 
 import { User } from './User';
@@ -18,6 +19,7 @@ export class Trip {
     tripName: string;
 
     @ManyToOne(() => User, (user) => user.createdTrips)
+    @JoinColumn()
     creator: User;
 
     @Column({ type: 'timestamptz' })
@@ -29,7 +31,7 @@ export class Trip {
     @Column({ array: true })
     destinations: string;
 
-    @ManyToMany(() => User)
+    @ManyToMany(() => User, (user) => user.attendedTrips, { cascade: true })
     @JoinTable()
     attendees: User[];
 }

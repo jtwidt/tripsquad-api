@@ -38,6 +38,7 @@ export const getUser = async (req: Request, res: Response) => {
     const id = req.params.id;
     const user = await AppDataSource.manager.find(User, {
         select: {
+            id: true,
             firstName: true,
             lastName: true,
             email: true,
@@ -61,6 +62,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     try {
         const users = await AppDataSource.manager.find(User, {
             select: {
+                id: true,
                 firstName: true,
                 lastName: true,
                 email: true,
