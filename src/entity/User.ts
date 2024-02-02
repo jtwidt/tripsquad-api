@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Trip } from './Trip';
 
 @Entity()
 export class User {
@@ -34,4 +35,7 @@ export class User {
 
     @Column()
     postCode: string;
+
+    @OneToMany(() => Trip, (trip) => trip.creator)
+    createdTrips: Trip[];
 }
