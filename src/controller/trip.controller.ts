@@ -36,3 +36,18 @@ export const createTrip = async (req: Request, res: Response) => {
     });
     return res.status(201).send({ trip: fullTrip });
 };
+
+export const getTrip = async (req: Request, res: Response) => {
+    const tripId = req.params.id;
+    const trip = await AppDataSource.manager.findOne(Trip, {
+        where: { id: tripId },
+        relations: { creator: true, attendees: true },
+    });
+    if (!trip) {
+        return res
+            .status(404)
+            .send({ message: 'No trip could be found with that ID.' });
+    } else {
+        return res.status(200).send({ trip: trip });
+    }
+};
