@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -25,7 +25,98 @@ export const registerUser = async (req: Request, res: Response) => {
         user.country = req.body.country;
         user.postCode = req.body.postCode;
         await AppDataSource.manager.save(user);
-        console.log(user);
-        return res.status(200).send({ message: 'User successfully created' });
+        const accessToken = jwt.sign(
+            { email, id: user.id },
+            process.env.JWT_SECRET as jwt.Secret,
+            { expiresIn: '1h' }
+        );
+        return res.status(201).send({ token: accessToken, userId: user.id });
+    }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const user = await AppDataSource.manager.find(User, {
+        select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            address1: true,
+            address2: true,
+            city: true,
+            state: true,
+            country: true,
+            postCode: true,
+        },
+        where: { id: id },
+    });
+    if (!user) {
+        return res.status(401).send({ message: 'User could not be found.' });
+    } else {
+        return res.status(200).send({ user: user });
+    }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await AppDataSource.manager.find(User, {
+            select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                address1: true,
+                address2: true,
+                city: true,
+                state: true,
+                country: true,
+                postCode: true,
+            },
+        });
+        return res.status(200).json({ users: users });
+    } catch (error) {
+        return res.status(500).send({ message: 'Internal Server Error' });
+    }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const updatedUserInfo = req.body;
+    const user = await AppDataSource.manager.findOneBy(User, { id: userId });
+    if (!user) {
+        return res.status(400).send({ message: 'User could not be found.' });
+    } else {
+        if (updatedUserInfo.email) {
+            const verifyEmail = await AppDataSource.manager.findOneBy(User, {
+                email: updatedUserInfo.email,
+            });
+            if (verifyEmail) {
+                return res.status(401).send({
+                    message: 'Email already in use. User not updated',
+                });
+            }
+        }
+
+        if (updatedUserInfo.password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(
+                updatedUserInfo.password,
+                salt
+            );
+            updatedUserInfo.password = hashedPassword;
+        }
+
+        await AppDataSource.manager.update(User, userId, updatedUserInfo);
+        return res.status(200).send({ message: 'User updated successfully' });
+    }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const user = await AppDataSource.manager.findOneBy(User, { id: userId });
+    if (!user) {
+        return res.status(400).send({ message: 'User could not be found.' });
+    } else {
+        await AppDataSource.manager.remove(user);
+        return res.status(200).send({ message: 'User successfully deleted.' });
     }
 };
