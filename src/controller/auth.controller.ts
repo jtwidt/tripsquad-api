@@ -7,7 +7,11 @@ import { AppDataSource } from '../data-source';
 
 export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    const user = await AppDataSource.manager.findOneBy(User, { email });
+    const user = await AppDataSource.getRepository(User)
+        .createQueryBuilder('user')
+        .where('user.email = :email', { email })
+        .addSelect('user.password')
+        .getOne();
     if (!user) {
         return res
             .status(401)
