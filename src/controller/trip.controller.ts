@@ -5,6 +5,8 @@ import { AppDataSource } from '../data-source';
 import { Trip } from '../entity/Trip';
 import { In } from 'typeorm';
 
+const userRepository = AppDataSource.getRepository(User);
+
 export const createTrip = async (req: Request, res: Response) => {
     const tripInfo = req.body;
     const trip = new Trip();
@@ -54,7 +56,7 @@ export const getTrip = async (req: Request, res: Response) => {
 
 export const getAllUserCreatedTrips = async (req: Request, res: Response) => {
     const userId = req.body.userId;
-    const userTrips = await AppDataSource.getRepository(User)
+    const userTrips = await userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.createdTrips', 'trip')
         .where('user.id = :id', { id: userId })
@@ -73,7 +75,7 @@ export const getUpcomingUserCreatedTrips = async (
     const userId = req.body.userId;
     const now = new Date();
     const formattedNow = now.toLocaleDateString('en-US');
-    const userTrips = await AppDataSource.getRepository(User)
+    const userTrips = await userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.createdTrips', 'trip')
         .where('user.id = :id', { id: userId })
@@ -88,7 +90,7 @@ export const getUpcomingUserCreatedTrips = async (
 
 export const getAllUserAttendingTrips = async (req: Request, res: Response) => {
     const userId = req.body.userId;
-    const userTrips = await AppDataSource.getRepository(User)
+    const userTrips = await userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.attendingTrips', 'trip')
         .where('user.id = :id', { id: userId })
@@ -107,7 +109,7 @@ export const getUpcomingUserAttendingTrips = async (
     const userId = req.body.userId;
     const now = new Date();
     const formattedNow = now.toLocaleDateString('en-US');
-    const userTrips = await AppDataSource.getRepository(User)
+    const userTrips = await userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.attendingTrips', 'trip')
         .where('user.id = :id', { id: userId })
@@ -153,9 +155,9 @@ export const editTrip = async (req: Request, res: Response) => {
             if (newAttendees) {
                 // Update the attendees property with the newAttendees
                 updatedTrip.attendees = newAttendees;
-            } else {
-                updatedTrip.attendees = trip.attendees;
             }
+        } else {
+            updatedTrip.attendees = trip.attendees;
         }
 
         // Save the updatedTrip instance
