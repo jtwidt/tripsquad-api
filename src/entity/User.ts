@@ -46,5 +46,5 @@ export class User {
     createdTrips: Trip[];
 
     @ManyToMany(() => Trip, (trip) => trip.attendees)
-    attendedTrips: Trip[];
+    attendingTrips: Trip[];
 }

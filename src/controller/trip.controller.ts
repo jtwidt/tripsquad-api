@@ -51,3 +51,27 @@ export const getTrip = async (req: Request, res: Response) => {
         return res.status(200).send({ trip: trip });
     }
 };
+
+export const getUserCreatedTrips = async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    const userTrips = await AppDataSource.manager.findOne(User, {
+        where: { id: userId },
+        relations: { createdTrips: true },
+    });
+    if (!userTrips) {
+        return res.status(404).send({ message: 'No user found with that ID.' });
+    }
+    return res.status(200).send({ trips: userTrips });
+};
+
+export const getUserAttendingTrips = async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    const userTrips = await AppDataSource.manager.findOne(User, {
+        where: { id: userId },
+        relations: { attendingTrips: true },
+    });
+    if (!userTrips) {
+        return res.status(404).send({ message: 'No user found with that ID.' });
+    }
+    return res.status(200).send({ trips: userTrips });
+};

@@ -31,7 +31,7 @@ export class Trip {
     @Column({ array: true })
     destinations: string;
 
-    @ManyToMany(() => User, (user) => user.attendedTrips, { cascade: true })
+    @ManyToMany(() => User, (user) => user.attendingTrips, { cascade: true })
     @JoinTable()
     attendees: User[];
 }
