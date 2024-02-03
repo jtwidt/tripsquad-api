@@ -8,6 +8,7 @@ import {
     getAllUserCreatedTrips,
     getUpcomingUserCreatedTrips,
     getUpcomingUserAttendingTrips,
+    editTrip,
 } from '../controller/trip.controller';
 
 router.get('/', (req: Request, res: Response) => {
@@ -18,6 +19,7 @@ router.post('/created/all', getAllUserCreatedTrips);
 router.post('/created/upcoming', getUpcomingUserCreatedTrips);
 router.post('/attending/all', getAllUserAttendingTrips);
 router.post('/attending/upcoming', getUpcomingUserAttendingTrips);
+router.patch('/edit/:id', editTrip);
 router.get('/:id', getTrip);
 
 export default router;

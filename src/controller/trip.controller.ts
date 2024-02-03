@@ -119,3 +119,54 @@ export const getUpcomingUserAttendingTrips = async (
     }
     return res.status(200).send({ trips: userTrips });
 };
+
+export const editTrip = async (req: Request, res: Response) => {
+    const tripId = req.params.id;
+    const { tripName, tripStart, tripEnd, destinations, attendees } = req.body;
+
+    let trip = await AppDataSource.manager.findOne(Trip, {
+        where: { id: tripId },
+        relations: { creator: true, attendees: true },
+    });
+
+    if (!trip) {
+        return res.status(404).send({ message: 'No trip found with this ID' });
+    } else {
+        // Create a new instance of the Trip entity
+        const updatedTrip = new Trip();
+        updatedTrip.id = trip.id; // Make sure to set the ID to retain the same record
+
+        // Update properties only if they are not null
+        updatedTrip.creator = trip.creator;
+        updatedTrip.tripName = tripName ? tripName : trip.tripName;
+        updatedTrip.tripStart = tripStart ? tripStart : trip.tripStart;
+        updatedTrip.tripEnd = tripEnd ? tripEnd : trip.tripEnd;
+        updatedTrip.destinations = destinations
+            ? destinations
+            : trip.destinations;
+
+        if (attendees) {
+            const newAttendees = await AppDataSource.manager.findBy(User, {
+                id: In(attendees),
+            });
+
+            if (newAttendees) {
+                // Update the attendees property with the newAttendees
+                updatedTrip.attendees = newAttendees;
+            } else {
+                updatedTrip.attendees = trip.attendees;
+            }
+        }
+
+        // Save the updatedTrip instance
+        await AppDataSource.manager.save(updatedTrip);
+
+        // Fetch the updatedTrip to include the relations
+        const fullUpdatedTrip = await AppDataSource.manager.findOne(Trip, {
+            where: { id: tripId },
+            relations: { creator: true, attendees: true },
+        });
+
+        return res.status(200).send({ trip: fullUpdatedTrip });
+    }
+};
