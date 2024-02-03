@@ -52,24 +52,68 @@ export const getTrip = async (req: Request, res: Response) => {
     }
 };
 
-export const getUserCreatedTrips = async (req: Request, res: Response) => {
+export const getAllUserCreatedTrips = async (req: Request, res: Response) => {
     const userId = req.body.userId;
-    const userTrips = await AppDataSource.manager.findOne(User, {
-        where: { id: userId },
-        relations: { createdTrips: true },
-    });
+    const userTrips = await AppDataSource.getRepository(User)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.createdTrips', 'trip')
+        .where('user.id = :id', { id: userId })
+        .orderBy('trip.tripStart')
+        .getMany();
     if (!userTrips) {
         return res.status(404).send({ message: 'No user found with that ID.' });
     }
     return res.status(200).send({ trips: userTrips });
 };
 
-export const getUserAttendingTrips = async (req: Request, res: Response) => {
+export const getUpcomingUserCreatedTrips = async (
+    req: Request,
+    res: Response
+) => {
     const userId = req.body.userId;
-    const userTrips = await AppDataSource.manager.findOne(User, {
-        where: { id: userId },
-        relations: { attendingTrips: true },
-    });
+    const now = new Date();
+    const formattedNow = now.toLocaleDateString('en-US');
+    const userTrips = await AppDataSource.getRepository(User)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.createdTrips', 'trip')
+        .where('user.id = :id', { id: userId })
+        .andWhere('trip.tripEnd >= :now', { now: formattedNow })
+        .orderBy('trip.tripStart')
+        .getMany();
+    if (!userTrips) {
+        return res.status(404).send({ message: 'No user found with that ID.' });
+    }
+    return res.status(200).send({ trips: userTrips });
+};
+
+export const getAllUserAttendingTrips = async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    const userTrips = await AppDataSource.getRepository(User)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.attendingTrips', 'trip')
+        .where('user.id = :id', { id: userId })
+        .orderBy('trip.tripStart')
+        .getMany();
+    if (!userTrips) {
+        return res.status(404).send({ message: 'No user found with that ID.' });
+    }
+    return res.status(200).send({ trips: userTrips });
+};
+
+export const getUpcomingUserAttendingTrips = async (
+    req: Request,
+    res: Response
+) => {
+    const userId = req.body.userId;
+    const now = new Date();
+    const formattedNow = now.toLocaleDateString('en-US');
+    const userTrips = await AppDataSource.getRepository(User)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.attendingTrips', 'trip')
+        .where('user.id = :id', { id: userId })
+        .andWhere('trip.tripEnd >= :now', { now: formattedNow })
+        .orderBy('trip.tripStart')
+        .getMany();
     if (!userTrips) {
         return res.status(404).send({ message: 'No user found with that ID.' });
     }
