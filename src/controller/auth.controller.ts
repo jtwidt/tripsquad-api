@@ -5,9 +5,15 @@ import bcrypt from 'bcrypt';
 import { User } from '../entity/User';
 import { AppDataSource } from '../data-source';
 
+const userRepository = AppDataSource.getRepository(User);
+
 export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    const user = await AppDataSource.manager.findOneBy(User, { email });
+    const user = await userRepository
+        .createQueryBuilder('user')
+        .where('user.email = :email', { email })
+        .addSelect('user.password')
+        .getOne();
     if (!user) {
         return res
             .status(401)

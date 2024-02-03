@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    ManyToMany,
+} from 'typeorm';
+import { Trip } from './Trip';
 
 @Entity()
 export class User {
@@ -14,7 +21,7 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ select: false })
     password: string;
 
     @Column()
@@ -34,4 +41,10 @@ export class User {
 
     @Column()
     postCode: string;
+
+    @OneToMany(() => Trip, (trip) => trip.creator)
+    createdTrips: Trip[];
+
+    @ManyToMany(() => Trip, (trip) => trip.attendees)
+    attendingTrips: Trip[];
 }
