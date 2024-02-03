@@ -91,7 +91,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     const userId = req.params.id;
     const user = await AppDataSource.manager.findOneBy(User, { id: userId });
     if (!user) {
-        return res.status(400).send({ message: 'User could not be found.' });
+        return res.status(404).send({ message: 'User could not be found.' });
     } else {
         await AppDataSource.manager.remove(user);
         return res.status(200).send({ message: 'User successfully deleted.' });

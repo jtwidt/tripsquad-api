@@ -172,3 +172,15 @@ export const editTrip = async (req: Request, res: Response) => {
         return res.status(200).send({ trip: fullUpdatedTrip });
     }
 };
+
+export const deleteTrip = async (req: Request, res: Response) => {
+    const tripId = req.params.id;
+
+    const trip = await AppDataSource.manager.findOneBy(Trip, { id: tripId });
+    if (!trip) {
+        return res.status(404).send({ message: 'Trip could not be found.' });
+    } else {
+        await AppDataSource.manager.remove(trip);
+        return res.status(200).send({ message: 'Trip successfully deleted.' });
+    }
+};

@@ -9,6 +9,7 @@ import {
     getUpcomingUserCreatedTrips,
     getUpcomingUserAttendingTrips,
     editTrip,
+    deleteTrip,
 } from '../controller/trip.controller';
 
 router.get('/', (req: Request, res: Response) => {
@@ -20,6 +21,7 @@ router.post('/created/upcoming', getUpcomingUserCreatedTrips);
 router.post('/attending/all', getAllUserAttendingTrips);
 router.post('/attending/upcoming', getUpcomingUserAttendingTrips);
 router.patch('/edit/:id', editTrip);
+router.delete('/:id', deleteTrip);
 router.get('/:id', getTrip);
 
 export default router;
