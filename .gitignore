@@ -135,3 +135,5 @@ node_modules/
 build/
 tmp/
 temp/
+
+*.key
