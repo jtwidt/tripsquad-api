@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("addresses", {
+    await queryInterface.createTable("Addresses", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,11 +12,9 @@ module.exports = {
       address1: {
         type: Sequelize.STRING,
         allowNull: false,
-        field: "address_1",
       },
       address2: {
         type: Sequelize.STRING,
-        field: "address_2",
       },
       city: {
         type: Sequelize.STRING,
@@ -33,21 +31,27 @@ module.exports = {
       postCode: {
         type: Sequelize.STRING,
         allowNull: false,
-        field: "post_code",
+      },
+      userId: {
+        type: Sequelize.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: "created_at",
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        field: "updated_at",
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("addresses");
+    await queryInterface.dropTable("Addresses");
   },
 };

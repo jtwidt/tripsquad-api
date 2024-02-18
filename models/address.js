@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Address.belongsTo(models.User, {
+        foreignKey: "userId",
+        onDelete: "CASCADE",
+      });
     }
   }
   Address.init(
@@ -30,13 +34,11 @@ module.exports = (sequelize, DataTypes) => {
       postCode: {
         type: DataTypes.STRING,
         allowNull: false,
-        field: "post_code",
       },
     },
     {
       sequelize,
       modelName: "Address",
-      tableName: "addresses",
     }
   );
   return Address;

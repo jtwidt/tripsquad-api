@@ -16,23 +16,19 @@ module.exports = (sequelize, DataTypes) => {
       tripName: {
         type: DataTypes.STRING,
         allowNull: false,
-        field: "trip_name",
       },
       tripStart: {
         type: DataTypes.DATE,
         allowNull: false,
-        field: "trip_start",
       },
       tripEnd: {
         type: DataTypes.DATE,
         allowNull: false,
-        field: "trip_end",
       },
     },
     {
       sequelize,
       modelName: "Trip",
-      tableName: "trips",
     }
   );
   return Trip;
