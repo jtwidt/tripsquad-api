@@ -4,7 +4,8 @@
   "description": "Back end for TripSquad group trip planning application",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "db:init": "npx sequelize-cli db:create && npx sequelize-cli db:migrate"
   },
   "repository": {
     "type": "git",
