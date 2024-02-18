@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "tripsquad_db",
+    "password": "12qwaszx!@QWASZX",
+    "database": "tripsqaud_db-dev",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": 5433
+  },
+  "test": {
+    "username": "tripsquad_db",
+    "password": "12qwaszx!@QWASZX",
+    "database": "tripsqaud_db-test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": 5433
+  },
+  "production": {
+    "username": "tripsquad_db",
+    "password": "12qwaszx!@QWASZX",
+    "database": "tripsqaud_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": 5433
+  }
+}
