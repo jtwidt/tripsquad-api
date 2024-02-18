@@ -13,6 +13,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "addresses",
       });
+
+      User.hasMany(models.Trip, {
+        foreignKey: "creatorId",
+        as: "createdTrips",
+      });
+
+      User.belongsToMany(models.Trip, {
+        through: "UserTrip",
+        foreignKey: "userId",
+        otherKey: "tripId",
+        as: "attendingTrips",
+      });
     }
   }
   User.init(
