@@ -7,7 +7,7 @@ const {createToken} = require("../middleware/authJwt");
 const createUser = async (req, res) => {
   const {firstName, lastName, email, password} = req.body;
 
-  const invalidEmail = await User.findAll({where: {email: email}});
+  const invalidEmail = await User.findOne({where: {email: email}});
 
   if (invalidEmail) {
     return res.status(400).send({message: "This email is already in use."});
@@ -35,7 +35,7 @@ const createUser = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
   const id = req.params.id;
-  const user = await User.findAll({
+  const user = await User.findOne({
     where: {id: id},
     include: "addresses",
   });
@@ -59,7 +59,7 @@ const updateUser = async (req, res) => {
   const id = req.params.id;
   const info = req.body;
 
-  const user = await User.findAll({
+  const user = await User.findOne({
     attributes: {exclude: ["createdAt", "updatedAt"]},
     where: {id: id},
   });
@@ -95,7 +95,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const id = req.params.id;
 
-  const validUser = await User.findAll({where: {id: id}});
+  const validUser = await User.findOne({where: {id: id}});
 
   if (!validUser) {
     return res.status(400).send({message: "No user found."});

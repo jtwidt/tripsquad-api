@@ -17,7 +17,16 @@ module.exports = (sequelize, DataTypes) => {
   }
   Address.init(
     {
-      address1: {type: DataTypes.STRING, allowNull: false},
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, // Add this line to generate UUID automatically
+        allowNull: false,
+        primaryKey: true,
+      },
+      address1: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       address2: DataTypes.STRING,
       city: {
         type: DataTypes.STRING,

@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Trip.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, // Add this line to generate UUID automatically
+        allowNull: false,
+        primaryKey: true,
+      },
       tripName: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const db = require("./models");
 const activities = require("./routes/activity.routes");
+const addresses = require("./routes/address.routes");
 const auth = require("./routes/auth.routes");
 const flights = require("./routes/flight.routes");
 const food = require("./routes/food.routes");
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/activities", activities);
+app.use("/addresses", addresses);
 app.use("/auth", auth);
 app.use("/flights", flights);
 app.use("/food", food);
