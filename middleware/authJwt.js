@@ -1,9 +1,15 @@
 const fs = require("fs");
+const path = require("path");
 const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config");
 
-const privateKey = fs.readFileSync("../private.key", {encoding: "utf8"});
-const publicKey = fs.readFileSync("../public.key", {encoding: "utf8"});
+const privateKey = fs.readFileSync(
+  path.resolve(__dirname, "../private.key"),
+  "utf8"
+);
+const publicKey = fs.readFileSync(
+  path.resolve(__dirname, "../public.key"),
+  "utf8"
+);
 
 const signOptions = {
   expiresIn: "1h",
@@ -18,7 +24,7 @@ const verifyOptions = {
 const createToken = (payload) => {
   const token = jwt.sign(payload, privateKey, signOptions);
 
-  return createToken;
+  return token;
 };
 
 const verifyToken = (req, res, next) => {
