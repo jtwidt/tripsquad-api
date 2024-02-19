@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "tripId",
         otherKey: "userId",
         as: "attendees",
+        unique: true,
       });
 
       Trip.belongsTo(models.User, {
