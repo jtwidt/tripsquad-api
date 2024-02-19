@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Trip extends Model {
+  class Flight extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,26 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Trip.belongsToMany(models.User, {
-        through: 'UserTrip',
-        foreignKey: 'tripId',
-        otherKey: 'userId',
-        as: 'attendees',
-        unique: true,
+      Flight.belongsTo(models.User, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+        as: 'traveller',
       });
 
-      Trip.belongsTo(models.User, {
-        foreignKey: 'creatorId',
-        as: 'creator',
-      });
-
-      Trip.hasMany(models.Flight, {
+      Flight.belongsTo(models.Trip, {
         foreignKey: 'tripId',
-        as: 'flights',
+        onDelete: 'CASCADE',
+        as: 'trip',
       });
     }
   }
-  Trip.init(
+  Flight.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -36,23 +30,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      tripName: {
+      flightOrderNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
-      tripStart: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      tripEnd: {
-        type: DataTypes.DATE,
+        unique: true,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: 'Trip',
+      modelName: 'Flight',
     }
   );
-  return Trip;
+  return Flight;
 };

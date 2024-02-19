@@ -16,8 +16,6 @@ const loginUser = async (req, res) => {
 
   const validPassword = await bcrypt.compare(password, user.password);
 
-  console.log(validPassword);
-
   if (!validPassword) {
     return res.status(400).send({ message: 'Email or password incorrect.' });
   }
