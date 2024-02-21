@@ -6,13 +6,27 @@ const amadeus = new Amadeus({
 });
 
 const getLocationInfo = async (req, res) => {
-  const { keyword } = req.body;
+  const { keyword, locationType } = req.body;
   let response;
+
+  let subType;
+
+  switch (locationType) {
+    case 'city':
+      subType = Amadeus.location.city;
+      break;
+    case 'airport':
+      subType = Amadeus.location.airport;
+      break;
+    default:
+      subType = Amadeus.location.any;
+      break;
+  }
 
   try {
     response = await amadeus.referenceData.locations.get({
       keyword,
-      subType: Amadeus.location.any,
+      subType,
     });
   } catch (error) {
     return res.status(400).send(error);
