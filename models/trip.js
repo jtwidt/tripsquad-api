@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       });
 
+      Trip.belongsToMany(models.Destination, {
+        through: 'TripDestination',
+        foreignKey: 'tripId',
+        otherKey: 'destinationId',
+        as: 'destinations',
+        unique: true,
+      });
+
       Trip.belongsTo(models.User, {
         foreignKey: 'creatorId',
         as: 'creator',
