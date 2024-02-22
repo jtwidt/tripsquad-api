@@ -78,6 +78,12 @@ const bookFlight = async (req, res) => {
     return res.status(400).send({ message: 'Traveller not found.' });
   }
 
+  const trip = await Trip.findOne({ where: { id: tripId } });
+
+  if (!trip) {
+    return res.status(400).send({ message: 'Trip not found.' });
+  }
+
   // TODO: Adjust function to reflect correct travel document details
   const flightBookingData = {
     data: {
