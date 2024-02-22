@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'tripId',
         as: 'flights',
       });
+
+      Trip.hasMany(models.Hotel, {
+        foreignKey: 'tripId',
+        as: 'hotels',
+      });
     }
   }
   Trip.init(

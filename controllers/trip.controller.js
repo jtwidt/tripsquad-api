@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const db = require('../models/');
 
 const Flight = db.Flight;
+const Hotel = db.Hotel;
 const Trip = db.Trip;
 const User = db.User;
 
@@ -53,7 +54,14 @@ const createTrip = async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
-        where: { tripId: trip.id },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        include: 'guest',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
       },
     ],
   });
@@ -88,7 +96,14 @@ const getTrip = async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
-        where: { tripId: id },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        include: 'guest',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
       },
     ],
   });
@@ -250,7 +265,14 @@ const updateTrip = async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
-        where: { tripId: id },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        include: 'guest',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
       },
     ],
   });
