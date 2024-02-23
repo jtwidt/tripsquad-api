@@ -2,13 +2,15 @@ const { Op } = require('sequelize');
 
 const db = require('../models/');
 
+const Destination = db.Destination;
 const Flight = db.Flight;
 const Hotel = db.Hotel;
 const Trip = db.Trip;
 const User = db.User;
 
 const createTrip = async (req, res) => {
-  const { tripName, tripStart, tripEnd, creatorId, attendees } = req.body;
+  const { tripName, tripStart, tripEnd, creatorId, attendees, destinations } =
+    req.body;
 
   const validCreator = await User.findOne({ where: { id: creatorId } });
 
@@ -29,6 +31,21 @@ const createTrip = async (req, res) => {
   const attendeeArray = await User.findAll({ where: { id: attendees } });
 
   await trip.addAttendees(attendeeArray);
+
+  const createdDestinations = [];
+
+  for (const destination of destinations) {
+    const created = await Destination.findOrCreate({
+      where: {
+        city: destination.city,
+        country: destination.country,
+      },
+      defaults: destination,
+    });
+    createdDestinations.push(created[0]);
+  }
+
+  await trip.addDestinations(createdDestinations);
 
   const fullTrip = await Trip.findOne({
     where: { id: trip.id },
@@ -59,6 +76,13 @@ const createTrip = async (req, res) => {
         model: Hotel,
         as: 'hotels',
         include: 'guest',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Destination,
+        as: 'destinations',
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
