@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       });
 
+      Trip.belongsToMany(models.Destination, {
+        through: 'TripDestination',
+        foreignKey: 'tripId',
+        otherKey: 'destinationId',
+        as: 'destinations',
+        unique: true,
+      });
+
       Trip.belongsTo(models.User, {
         foreignKey: 'creatorId',
         as: 'creator',
@@ -25,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       Trip.hasMany(models.Flight, {
         foreignKey: 'tripId',
         as: 'flights',
+      });
+
+      Trip.hasMany(models.Hotel, {
+        foreignKey: 'tripId',
+        as: 'hotels',
       });
     }
   }
