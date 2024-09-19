@@ -1,0 +1,19 @@
+{
+  "name": "tripsquad-api",
+  "version": "1.0.0",
+  "description": "The API for the TripSquad application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtwidt/tripsquad-api.git"
+  },
+  "author": "Jeremy Twidt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jtwidt/tripsquad-api/issues"
+  },
+  "homepage": "https://github.com/jtwidt/tripsquad-api#readme"
+}
