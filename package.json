@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/jtwidt/tripsquad-api/issues"
   },
-  "homepage": "https://github.com/jtwidt/tripsquad-api#readme"
+  "homepage": "https://github.com/jtwidt/tripsquad-api#readme",
+  "dependencies": {
+    "express": "^4.21.0",
+    "pg": "^8.13.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
+  }
 }
