@@ -1,12 +1,47 @@
-// config/config.js
-
-const dotenv = require('dotenv');
-dotenv.config();
+const fs = require('fs');
+require('dotenv').config();
 
 module.exports = {
   development: {
-    url: process.env.DATABASE_URL,
+    username: process.env.DEV_DB_USERNAME,
+    password: process.env.DEV_DB_PASSWORD,
+    database: process.env.DEV_DB_NAME,
+    host: process.env.DEV_DB_HOST,
+    port: process.env.DEV_DB_PORT,
     dialect: 'postgres',
-    dialectOptions: { ssl: { require: true } },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  },
+  test: {
+    username: process.env.TEST_DB_USERNAME,
+    password: process.env.TEST_DB_PASSWORD,
+    database: process.env.TEST_DB_NAME,
+    host: process.env.TEST_DB_HOST,
+    port: process.env.TEST_DB_PORT,
+    dialect: 'postgres',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  },
+  production: {
+    username: process.env.PROD_DB_USERNAME,
+    password: process.env.PROD_DB_PASSWORD,
+    database: process.env.PROD_DB_NAME,
+    host: process.env.PROD_DB_HOST,
+    port: process.env.PROD_DB_PORT,
+    dialect: 'postgres',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   },
 };
