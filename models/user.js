@@ -5,6 +5,16 @@ module.exports = (sequelize) => {
   class User extends Model {
     static associate(models) {
       // Define associations here if needed
+      User.hasMany(models.Trip, { foreignKey: 'createdBy' });
+      User.hasMany(models.Flight, { foreignKey: 'userId' });
+      User.hasMany(models.HotelReservation, { foreignKey: 'userId' });
+      User.hasMany(models.ItineraryItemUser, { foreignKey: 'userId' });
+      User.belongsToMany(models.Trip, {
+        through: 'TripAttendee',
+        foreignKey: 'userId',
+        otherKey: 'tripId',
+        as: 'attendedTrips',
+      });
     }
   }
 
