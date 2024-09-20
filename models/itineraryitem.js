@@ -28,6 +28,10 @@ module.exports = (sequelize) => {
         type: DataTypes.DATE,
         allowNull: false,
       },
+      endTime: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
       confirmationNumber: {
         type: DataTypes.STRING,
         allowNull: true,

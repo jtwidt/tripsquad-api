@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      end_time: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       confirmation_number: {
         type: Sequelize.STRING,
         allowNull: true,
