@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/jtwidt/tripsquad-api#readme",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.0.42",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
