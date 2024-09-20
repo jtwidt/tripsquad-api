@@ -45,6 +45,30 @@ const getAllUsers = async (req, res) => {
 };
 
 // UPDATE A USER
+const updateUser = async (req, res) => {
+  // Get the Clerk userId added by the Clerk middleware
+  const { clerkId } = req.auth;
+
+  // Get the preferences JSON object that was sent with the request
+  const { preferences } = req.body;
+
+  // Find the user matching the Clerk ID
+  const user = await User.findOne({ where: { clerkId } });
+
+  // Return an error message if no user was found
+  if (!user) {
+    return res.status(400).send({ message: 'User not found' });
+  }
+
+  // Update the user in the database
+  const updatedUser = await User.update(preferences, {
+    where: { clerkId },
+    returning: true,
+    plain: true,
+  });
+
+  return res.status(200).send({ user: updatedUser[1].dataValues });
+};
 
 // DELETE A USER
 const deleteUser = async (req, res) => {
@@ -70,4 +94,5 @@ module.exports = {
   getLoggedInUser,
   getAllUsers,
   deleteUser,
+  updateUser,
 };

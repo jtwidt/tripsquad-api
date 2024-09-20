@@ -7,6 +7,7 @@ const {
   getLoggedInUser,
   getAllUsers,
   deleteUser,
+  updateUser,
 } = require('../controllers/user.controller');
 
 router.get('/', (req, res) => {
@@ -17,3 +18,4 @@ router.post('/register', requireAuth(), createUser);
 router.get('/me', requireAuth(), getLoggedInUser);
 router.get('/all', requireAuth(), getAllUsers);
 router.delete('/delete', requireAuth(), deleteUser);
+router.patch('/update', requireAuth(), updateUser);
