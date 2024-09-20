@@ -47,8 +47,27 @@ const getAllUsers = async (req, res) => {
 // UPDATE A USER
 
 // DELETE A USER
+const deleteUser = async (req, res) => {
+  // Get the Clerk userID added by the Clerk middleware
+  const { clerkId } = req.auth;
+
+  // Ensure that the user exists and send an error message if not found
+  const validUser = await User.findOne({ where: { clerkId } });
+
+  // Return a message stating that the user was not found
+  if (!validUser) {
+    return res.status(400).send({ message: 'No user found.' });
+  }
+
+  // Delete the user and send a success message once complete
+  await User.destroy({ where: { clerkId } });
+
+  return res.status(200).send({ message: 'User deleted' });
+};
 
 module.exports = {
   createUser,
   getLoggedInUser,
+  getAllUsers,
+  deleteUser,
 };
