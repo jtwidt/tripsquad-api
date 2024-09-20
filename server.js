@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const db = require('./models');
+const users = require('./routes/user.routes');
 
 const port = process.env.PORT || 3001;
 
@@ -25,6 +26,8 @@ db.sequelize
 app.get('/', (req, res) => {
   res.send('Hello from the TripSquad API!');
 });
+
+app.use('/users', users);
 
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
