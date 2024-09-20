@@ -2,13 +2,13 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class ItineraryItemUser extends Model {
+  class TripAttendee extends Model {
     static associate(models) {
       // Define associations here
     }
   }
 
-  ItineraryItemUser.init(
+  TripAttendee.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -24,13 +24,13 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'ItineraryItemUser', // PascalCase model name
-      tableName: 'itinerary_item_users', // Underscored table name
+      modelName: 'TripAttendee', // PascalCase model name
+      tableName: 'trip_attendees', // Underscored table name
       underscored: true, // Enables underscored column names
       timestamps: true, // Enables createdAt and updatedAt fields
       freezeTableName: true, // Ensures the table name is not pluralized
     }
   );
 
-  return ItineraryItemUser;
+  return TripAttendee;
 };
