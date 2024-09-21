@@ -84,7 +84,65 @@ const createTrip = async (req, res) => {
 };
 
 // GET A SPECIFIC TRIP
-const getTripById = async (req, res) => {};
+const getTripById = async (req, res) => {
+  // Get the trip ID from the URL
+  const { tripId } = req.params;
+
+  // Search the database for the trip
+  const trip = await Trip.findOne({
+    where: {
+      id: tripId,
+    },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: User,
+        as: 'creator',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: User,
+        as: 'attendees',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+    ],
+  });
+
+  // If no trip was found send an error message
+  if (!trip) {
+    return res.status(400).send({ message: 'No trip found' });
+  }
+
+  // Send the found trip
+  return res.status(200).send({ trip });
+};
 
 // GET CREATED TRIPS
 const getCreatedTrips = async (req, res) => {};
