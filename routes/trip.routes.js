@@ -12,6 +12,7 @@ const {
   modifyTripAttendees,
   modifyTripFlights,
   modifyTripHotels,
+  modifyTripItinerary,
   deleteTrip,
 } = require('../controllers/trip.controller');
 
@@ -63,6 +64,11 @@ router.patch(
   '/:id/hotels',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   modifyTripHotels
+);
+router.patch(
+  '/:id/itinerary',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  modifyTripItinerary
 );
 router.delete(
   '/:id',

@@ -107,6 +107,9 @@ const modifyTripFlights = async (req, res) => {};
 // MODIFY HOTELS FOR TRIP
 const modifyTripHotels = async (req, res) => {};
 
+// MODIFY TRIP ITINERARY
+const modifyTripItinerary = async (req, res) => {};
+
 // DELETE TRIP
 const deleteTrip = async (req, res) => {};
 
@@ -120,5 +123,6 @@ module.exports = {
   modifyTripAttendees,
   modifyTripFlights,
   modifyTripHotels,
+  modifyTripItinerary,
   deleteTrip,
 };
