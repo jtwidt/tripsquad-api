@@ -468,7 +468,35 @@ const updateTrip = async (req, res) => {
 };
 
 // DELETE TRIP
-const deleteTrip = async (req, res) => {};
+const cancelTrip = async (req, res) => {
+  // Get the logged in user's Clerk ID
+  const { userId: clerkId } = req.auth;
+
+  // Get the trip ID from the URL
+  const { tripId } = req.params;
+
+  // Find the user with the associated Clerk ID
+  const user = await User.findOne({ where: { clerkId } });
+
+  // If no user is found send an error message
+  if (!user) {
+    return res.status(400).send({ message: 'User not found' });
+  }
+
+  // Get the trip with the matching trip ID
+  const trip = await Trip.findOne({ where: { tripId } });
+
+  // If no trip is found, send an error message
+  if (!trip) {
+    return res.status(400).send({ message: 'Trip not found' });
+  }
+
+  // Cancel the trip
+  await Trip.update({ status: 'cancelled' }, { where: { id: tripId } });
+
+  // Send a success message to the user
+  return res.status(200).send({ message: 'Trip successfully cancelled' });
+};
 
 module.exports = {
   createTrip,
@@ -477,5 +505,5 @@ module.exports = {
   getAttendingTrips,
   getAllTrips,
   updateTrip,
-  deleteTrip,
+  cancelTrip,
 };

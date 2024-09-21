@@ -9,7 +9,7 @@ const {
   getAllTrips,
   getTripById,
   updateTrip,
-  deleteTrip,
+  cancelTrip,
 } = require('../controllers/trip.controller');
 
 router.get('/', (req, res) => {
@@ -49,5 +49,5 @@ router.patch(
 router.delete(
   '/:tripId',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
-  deleteTrip
+  cancelTrip
 );
