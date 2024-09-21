@@ -5,7 +5,7 @@ const User = db.User;
 // CREATE A USER
 const createUser = async (req, res) => {
   // Gets the clerk user ID provided by the Clerk middleware
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Searches the database for a user with the given Clerk ID, creates the user if none found.
   const [user, created] = await User.findOrCreate({
@@ -23,7 +23,7 @@ const createUser = async (req, res) => {
 // GET LOGGED IN USER
 const getLoggedInUser = async (req, res) => {
   // Gets the clerk user ID provided by the Clerk middleware
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Find the user based on the Clerk ID
   const user = await User.findOne({ where: { clerkId } });
@@ -47,7 +47,7 @@ const getAllUsers = async (req, res) => {
 // UPDATE A USER
 const updateUser = async (req, res) => {
   // Get the Clerk userId added by the Clerk middleware
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Get the preferences JSON object that was sent with the request
   const { preferences } = req.body;
@@ -73,7 +73,7 @@ const updateUser = async (req, res) => {
 // DELETE A USER
 const deleteUser = async (req, res) => {
   // Get the Clerk userID added by the Clerk middleware
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Ensure that the user exists and send an error message if not found
   const validUser = await User.findOne({ where: { clerkId } });

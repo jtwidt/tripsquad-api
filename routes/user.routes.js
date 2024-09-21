@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth } = require('@clerk/clerk-sdk-node');
+const { ClerkExpressWithAuth } = require('@clerk/clerk-sdk-node');
 
 const {
   createUser,
@@ -14,8 +14,28 @@ router.get('/', (req, res) => {
   return res.status(200).send({ message: 'Users root route' });
 });
 
-router.post('/register', requireAuth(), createUser);
-router.get('/me', requireAuth(), getLoggedInUser);
-router.get('/all', requireAuth(), getAllUsers);
-router.delete('/delete', requireAuth(), deleteUser);
-router.patch('/update', requireAuth(), updateUser);
+router.post(
+  '/register',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  createUser
+);
+router.get(
+  '/me',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  getLoggedInUser
+);
+router.get(
+  '/all',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  getAllUsers
+);
+router.delete(
+  '/delete',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  deleteUser
+);
+router.patch(
+  '/update',
+  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
+  updateUser
+);

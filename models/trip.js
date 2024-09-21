@@ -1,14 +1,18 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
+const { generateReferralCode } = require('../helpers/generic.helper');
 
 module.exports = (sequelize) => {
   class Trip extends Model {
     static associate(models) {
       // Define associations here if needed
-      Trip.belongsTo(models.User, { foreignKey: 'createdBy' });
-      Trip.hasMany(models.Flight, { foreignKey: 'tripId' });
-      Trip.hasMany(models.Hotel, { foreignKey: 'tripId' });
-      Trip.hasMany(models.ItineraryItem, { foreignKey: 'tripId' });
+      Trip.belongsTo(models.User, { foreignKey: 'creatorId', as: 'creator' });
+      Trip.hasMany(models.Flight, { foreignKey: 'tripId', as: 'flights' });
+      Trip.hasMany(models.Hotel, { foreignKey: 'tripId', as: 'hotels' });
+      Trip.hasMany(models.ItineraryItem, {
+        foreignKey: 'tripId',
+        as: 'itinerary',
+      });
       Trip.belongsToMany(models.User, {
         through: 'TripAttendee',
         foreignKey: 'tripId',
@@ -46,6 +50,12 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM('planned', 'ongoing', 'completed', 'canceled'), // ENUM definition
         allowNull: false,
         defaultValue: 'planned', // Optional: default value
+      },
+      referralCode: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        defaultValue: generateReferralCode(8),
       },
     },
     {

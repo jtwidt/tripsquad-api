@@ -8,6 +8,7 @@ module.exports = (sequelize) => {
       ItineraryItem.belongsTo(models.Trip, { foreignKey: 'tripId' });
       ItineraryItem.hasMany(models.ItineraryItemUser, {
         foreignKey: 'itineraryItemId',
+        as: 'participants',
       });
     }
   }

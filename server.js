@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const db = require('./models');
 const users = require('./routes/user.routes');
+const trips = require('./routes/trip.routes');
 
 const port = process.env.PORT || 3001;
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', users);
+app.use('/trips', trips);
 
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
