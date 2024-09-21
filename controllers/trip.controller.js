@@ -231,14 +231,79 @@ const getCreatedTrips = async (req, res) => {
 
 // GET ATTENDING TRIPS
 const getAttendingTrips = async (req, res) => {
+  // Get the Clerk ID of the logged in user
   const { userId: clerkId } = req.auth;
 
+  // Find the user with the associated Clerk ID
   const user = await User.findOne({ where: { clerkId } });
 
+  // If no user found return an error message
   if (!user) {
     return res.status(400).send({ message: 'No user found' });
   }
 
+  // Search for trips where the user is in the list of attendees
+  const trips = await Trip.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: User,
+        as: 'creator',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'participants',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+      {
+        model: User,
+        as: 'attendees',
+        where: { userId: user.id },
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+    ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
+  });
+
+  // Return the list of found trips
+  return res.status(200).send({ trips });
+};
+
+// GET ALL TRIPS
+const getAllTrips = async (req, res) => {
+  // Retrieve all the trips from the database
   const trips = await Trip.findAll({
     attributes: {
       exclude: ['createdAt', 'updatedAt'],
@@ -292,11 +357,9 @@ const getAttendingTrips = async (req, res) => {
     order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
   });
 
+  // Return the list of trips
   return res.status(200).send({ trips });
 };
-
-// GET ALL TRIPS
-const getAllTrips = async (req, res) => {};
 
 // UPDATE TRIP
 const updateTrip = async (req, res) => {};
