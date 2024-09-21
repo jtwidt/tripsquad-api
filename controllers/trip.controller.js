@@ -1,7 +1,6 @@
 const db = require('../models');
 
-const User = db.User;
-const Trip = db.Trip;
+const { User, Trip, Flight, Hotel, ItineraryItem } = db;
 
 // CREATE A TRIP
 const createTrip = async (req, res) => {
@@ -17,10 +16,12 @@ const createTrip = async (req, res) => {
   // Get the user that has the clerkId
   const creatingUser = await User.findOne({ where: { clerkId } });
 
+  // Send an error message if no user is found
   if (!creatingUser) {
     return res.status(400).send({ message: 'User not found' });
   }
 
+  // Create the basic trip with the required non-null fields
   const trip = await Trip.create({
     tripName,
     startDate,
@@ -28,8 +29,10 @@ const createTrip = async (req, res) => {
     location,
   });
 
+  // Add the found user as the creator
   await trip.setCreator(creatingUser);
 
+  // Retrieve the full object
   const updatedTrip = await Trip.findOne({
     where: {
       id: trip.id,
@@ -45,26 +48,77 @@ const createTrip = async (req, res) => {
           exclude: ['createdAt', 'updatedAt'],
         },
       },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: User,
+        as: 'attendees',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
     ],
   });
 
+  // Return the full object to the user
   return res.status(200).send({ trip: updatedTrip });
 };
 
 // GET A SPECIFIC TRIP
+const getTripById = async (req, res) => {};
 
 // GET CREATED TRIPS
+const getCreatedTrips = async (req, res) => {};
 
 // GET ATTENDING TRIPS
+const getAttendingTrips = async (req, res) => {};
 
 // GET ALL TRIPS
+const getAllTrips = async (req, res) => {};
 
 // UPDATE TRIP
+const updateTrip = async (req, res) => {};
 
-// MODIFY LOCATIONS FOR TRIP
+// MODIFY TRIP ATTENDEES
+const modifyTripAttendees = async (req, res) => {};
 
-// MODIFY TRIP PARTICIPANTS
+// MODIFY FLIGHTS FOR TRIP
+const modifyTripFlights = async (req, res) => {};
+
+// MODIFY HOTELS FOR TRIP
+const modifyTripHotels = async (req, res) => {};
 
 // DELETE TRIP
+const deleteTrip = async (req, res) => {};
 
-module.exports = { createTrip };
+module.exports = {
+  createTrip,
+  getTripById,
+  getCreatedTrips,
+  getAttendingTrips,
+  getAllTrips,
+  updateTrip,
+  modifyTripAttendees,
+  modifyTripFlights,
+  modifyTripHotels,
+  deleteTrip,
+};
