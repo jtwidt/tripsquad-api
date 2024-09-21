@@ -145,7 +145,68 @@ const getTripById = async (req, res) => {
 };
 
 // GET CREATED TRIPS
-const getCreatedTrips = async (req, res) => {};
+const getCreatedTrips = async (req, res) => {
+  // Get the Clerk ID of the logged in user
+  const { clerkId } = req.auth;
+
+  // Search the database for the user
+  const user = await User.findOne({ where: { clerkId } });
+
+  // If no user is found send an error message
+  if (!user) {
+    return res.status(400).send({ message: 'User not found' });
+  }
+
+  // Find all the trips where the creator ID matches the user with the Clerk ID
+  const trips = await Trip.findAll({
+    where: {
+      creatorId: user.id,
+    },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: User,
+        as: 'creator',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: User,
+        as: 'attendees',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+    ],
+  });
+
+  // Send all the found trips
+  return res.status(200).send({ trips });
+};
 
 // GET ATTENDING TRIPS
 const getAttendingTrips = async (req, res) => {};
