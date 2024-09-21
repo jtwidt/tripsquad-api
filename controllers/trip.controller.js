@@ -5,7 +5,7 @@ const { User, Trip, Flight, Hotel, ItineraryItem } = db;
 // CREATE A TRIP
 const createTrip = async (req, res) => {
   // Gets the clerk user ID provided by the Clerk middleware
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Get the required trip items from the request body
   const { tripName, startDate, endDate, location } = req.body;
@@ -77,6 +77,7 @@ const createTrip = async (req, res) => {
         },
       },
     ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
   });
 
   // Return the full object to the user
@@ -124,6 +125,15 @@ const getTripById = async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
+        include: [
+          {
+            model: User,
+            as: 'participants',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
       },
       {
         model: User,
@@ -133,6 +143,7 @@ const getTripById = async (req, res) => {
         },
       },
     ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
   });
 
   // If no trip was found send an error message
@@ -147,7 +158,7 @@ const getTripById = async (req, res) => {
 // GET CREATED TRIPS
 const getCreatedTrips = async (req, res) => {
   // Get the Clerk ID of the logged in user
-  const { clerkId } = req.auth;
+  const { userId: clerkId } = req.auth;
 
   // Search the database for the user
   const user = await User.findOne({ where: { clerkId } });
@@ -193,6 +204,15 @@ const getCreatedTrips = async (req, res) => {
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
+        include: [
+          {
+            model: User,
+            as: 'participants',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
       },
       {
         model: User,
@@ -202,6 +222,7 @@ const getCreatedTrips = async (req, res) => {
         },
       },
     ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
   });
 
   // Send all the found trips
@@ -209,7 +230,70 @@ const getCreatedTrips = async (req, res) => {
 };
 
 // GET ATTENDING TRIPS
-const getAttendingTrips = async (req, res) => {};
+const getAttendingTrips = async (req, res) => {
+  const { userId: clerkId } = req.auth;
+
+  const user = await User.findOne({ where: { clerkId } });
+
+  if (!user) {
+    return res.status(400).send({ message: 'No user found' });
+  }
+
+  const trips = await Trip.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: User,
+        as: 'creator',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'participants',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+      {
+        model: User,
+        as: 'attendees',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+    ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
+  });
+
+  return res.status(200).send({ trips });
+};
 
 // GET ALL TRIPS
 const getAllTrips = async (req, res) => {};
