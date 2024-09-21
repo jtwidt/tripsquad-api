@@ -41,37 +41,37 @@ router.get(
   getAllTrips
 );
 router.get(
-  '/:id',
+  '/:tripId',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   getTripById
 );
 router.patch(
-  '/:id',
+  '/:tripId',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   updateTrip
 );
 router.patch(
-  '/:id/attendees',
+  '/:tripId/attendees',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   modifyTripAttendees
 );
 router.patch(
-  '/:id/flights',
+  '/:tripId/flights',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   modifyTripFlights
 );
 router.patch(
-  '/:id/hotels',
+  '/:tripId/hotels',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   modifyTripHotels
 );
 router.patch(
-  '/:id/itinerary',
+  '/:tripId/itinerary',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   modifyTripItinerary
 );
 router.delete(
-  '/:id',
+  '/:tripId',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   deleteTrip
 );
