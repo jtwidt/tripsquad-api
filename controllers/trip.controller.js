@@ -8,8 +8,9 @@ const createTrip = async (req, res) => {
   const { userId: clerkId } = req.auth;
 
   // Get the required trip items from the request body
-  const { tripName, startDate, endDate, location } = req.body;
+  let { tripName, startDate, endDate, location } = req.body;
 
+  // Turn the dates into JS dates
   startDate = new Date(startDate);
   endDate = new Date(endDate);
 
@@ -27,6 +28,7 @@ const createTrip = async (req, res) => {
     startDate,
     endDate,
     location,
+    referralCode,
   });
 
   // Add the found user as the creator
@@ -362,19 +364,108 @@ const getAllTrips = async (req, res) => {
 };
 
 // UPDATE TRIP
-const updateTrip = async (req, res) => {};
+const updateTrip = async (req, res) => {
+  // Get the trip ID from the URL
+  const { tripId } = req.params;
 
-// MODIFY TRIP ATTENDEES
-const modifyTripAttendees = async (req, res) => {};
+  // Get the Clerk ID of the logged in user
+  const { userId: clerkId } = req.auth;
 
-// MODIFY FLIGHTS FOR TRIP
-const modifyTripFlights = async (req, res) => {};
+  // Get the user associated with the Clerk ID
+  const user = await User.findOne({
+    where: { clerkId },
+  });
 
-// MODIFY HOTELS FOR TRIP
-const modifyTripHotels = async (req, res) => {};
+  // If the user isn't found return an error message
+  if (!user) {
+    return res.status(400).send({ message: 'No user found' });
+  }
 
-// MODIFY TRIP ITINERARY
-const modifyTripItinerary = async (req, res) => {};
+  // Find the trip for the given trip ID
+  let trip = await Trip.findOne({ where: { id: tripId } });
+
+  // If the trip isn't found return an error message
+  if (!trip) {
+    return res.status(400).send({ message: 'No trip found' });
+  }
+
+  // If the logged user is not the creator they are not allowed to modify the trip
+  if (trip.creatorId !== user.id) {
+    return res.status(403).send({ message: 'Not authorized' });
+  }
+
+  // Get the trip info from the request body
+  let { tripName, startDate, endDate, location, status } = req.body;
+
+  // Translate the dates to Javascript dates
+  startDate = new Date(startDate);
+  endDate = new Date(endDate);
+
+  // Create an object with all the updated/original values
+  const updateObject = {
+    tripName,
+    startDate,
+    endDate,
+    location,
+    status,
+  };
+
+  // Update the trip with the new info
+  await Trip.update(updateObject, {
+    where: { id: tripId },
+  });
+
+  trip = await Trip.findOne({
+    where: { id: tripId },
+    include: [
+      {
+        model: User,
+        as: 'creator',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Flight,
+        as: 'flights',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: Hotel,
+        as: 'hotels',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: ItineraryItem,
+        as: 'itinerary',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'participants',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+      {
+        model: User,
+        as: 'attendees',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+    ],
+    order: [[{ model: ItineraryItem, as: 'itinerary' }, 'startTime', 'ASC']],
+  });
+};
 
 // DELETE TRIP
 const deleteTrip = async (req, res) => {};
@@ -386,9 +477,5 @@ module.exports = {
   getAttendingTrips,
   getAllTrips,
   updateTrip,
-  modifyTripAttendees,
-  modifyTripFlights,
-  modifyTripHotels,
-  modifyTripItinerary,
   deleteTrip,
 };

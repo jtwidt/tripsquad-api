@@ -1,5 +1,6 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
+const { generateReferralCode } = require('../helpers/generic.helper');
 
 module.exports = (sequelize) => {
   class Trip extends Model {
@@ -49,6 +50,12 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM('planned', 'ongoing', 'completed', 'canceled'), // ENUM definition
         allowNull: false,
         defaultValue: 'planned', // Optional: default value
+      },
+      referralCode: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        defaultValue: generateReferralCode(8),
       },
     },
     {

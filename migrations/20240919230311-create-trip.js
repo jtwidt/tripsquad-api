@@ -1,4 +1,7 @@
 'use strict';
+
+const { generateReferralCode } = require('../helpers/generic.helper');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('trips', {
@@ -28,6 +31,12 @@ module.exports = {
         type: Sequelize.ENUM('planned', 'ongoing', 'completed', 'canceled'), // ENUM definition in migration
         allowNull: false,
         defaultValue: 'planned',
+      },
+      referral_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+        defaultValue: generateReferralCode(8),
       },
       created_at: {
         allowNull: false,

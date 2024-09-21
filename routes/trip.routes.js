@@ -9,10 +9,6 @@ const {
   getAllTrips,
   getTripById,
   updateTrip,
-  modifyTripAttendees,
-  modifyTripFlights,
-  modifyTripHotels,
-  modifyTripItinerary,
   deleteTrip,
 } = require('../controllers/trip.controller');
 
@@ -49,26 +45,6 @@ router.patch(
   '/:tripId',
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   updateTrip
-);
-router.patch(
-  '/:tripId/attendees',
-  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
-  modifyTripAttendees
-);
-router.patch(
-  '/:tripId/flights',
-  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
-  modifyTripFlights
-);
-router.patch(
-  '/:tripId/hotels',
-  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
-  modifyTripHotels
-);
-router.patch(
-  '/:tripId/itinerary',
-  ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
-  modifyTripItinerary
 );
 router.delete(
   '/:tripId',
