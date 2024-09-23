@@ -44,6 +44,7 @@ const getLocationById = async (req, res) => {
   // Get the location ID from the URL
   const { locationId } = req.params;
 
+  // Find the location with the matching ID
   const location = await Location.findOne({
     where: { id: locationId },
     attributes: {
@@ -51,15 +52,26 @@ const getLocationById = async (req, res) => {
     },
   });
 
+  // If no location is found, send an error message
   if (!location) {
     return res.status(400).send({ message: 'No location found' });
   }
 
+  // Return the found location
   return res.status(200).send({ location });
 };
 
 // GET ALL LOCATIONS
-const getAllLocations = async (req, res) => {};
+const getAllLocations = async (req, res) => {
+  // Get all the locations that are currently in the database
+  const locations = await Location.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+  });
+
+  return res.status(200).send({ locations });
+};
 
 // GET ALL COUNTRY LOCATIONS
 const getCountryLocations = async (req, res) => {};
