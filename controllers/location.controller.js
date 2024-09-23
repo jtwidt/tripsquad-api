@@ -74,10 +74,28 @@ const getAllLocations = async (req, res) => {
 };
 
 // GET ALL COUNTRY LOCATIONS
-const getCountryLocations = async (req, res) => {};
+const getCountryLocations = async (req, res) => {
+  // Get the country to search for from the URL
+  const { country } = req.params;
+
+  // Search the database for locations matching the country
+  const locations = await Location.findAll({ where: { country } });
+
+  // Return the list of found locations
+  return res.status(200).send({ locations });
+};
 
 // GET ALL CITY LOCATIONS
-const getCityLocations = async (req, res) => {};
+const getCityLocations = async (req, res) => {
+  // Get the city to search for from the URL
+  const { city } = req.params;
+
+  // Search the database for locations matching the city
+  const locations = await Location.findAll({ where: { city } });
+
+  // Return the list of found locations
+  return res.status(200).send({ locations });
+};
 
 // UPDATE LOCATION
 const updateLocation = async (req, res) => {};
