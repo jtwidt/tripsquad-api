@@ -98,7 +98,38 @@ const getCityLocations = async (req, res) => {
 };
 
 // UPDATE LOCATION
-const updateLocation = async (req, res) => {};
+const updateLocation = async (req, res) => {
+  // Get the location ID from the URL
+  const { locationId } = req.params;
+
+  // Search for the location that matches the given ID
+  let location = await Location.findOne({
+    where: {
+      id: locationId,
+    },
+  });
+
+  // If no location is found, return an error message
+  if (!location) {
+    return res.status(400).send({ message: 'No location found' });
+  }
+
+  // Get all the update properties from the request body
+  const updateObject = req.body;
+
+  // Update the database
+  await Location.update(updateObject, {
+    where: {
+      id: locationId,
+    },
+  });
+
+  // Get the updated location
+  location = await Location.findOne({ where: { id: locationId } });
+
+  // Send the updated location back
+  return res.status(200).send({ location });
+};
 
 // DELETE LOCATION
 const deleteLocation = async (req, res) => {};
