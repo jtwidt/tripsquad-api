@@ -40,7 +40,23 @@ const createLocation = async (req, res) => {
 };
 
 // GET SINGLE LOCATION
-const getLocationById = async (req, res) => {};
+const getLocationById = async (req, res) => {
+  // Get the location ID from the URL
+  const { locationId } = req.params;
+
+  const location = await Location.findOne({
+    where: { id: locationId },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+  });
+
+  if (!location) {
+    return res.status(400).send({ message: 'No location found' });
+  }
+
+  return res.status(200).send({ location });
+};
 
 // GET ALL LOCATIONS
 const getAllLocations = async (req, res) => {};

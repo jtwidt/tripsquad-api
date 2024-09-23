@@ -20,8 +20,8 @@ router.post('/create', ClerkExpressWithAuth(), createLocation);
 router.get('/all', ClerkExpressWithAuth(), getAllLocations);
 router.get('/country/:country', ClerkExpressWithAuth(), getCountryLocations);
 router.get('/city/:city', ClerkExpressWithAuth(), getCityLocations);
-router.get('/:id', ClerkExpressWithAuth(), getLocationById);
+router.get('/:locationId', ClerkExpressWithAuth(), getLocationById);
 router.patch('/:locationId', ClerkExpressWithAuth(), updateLocation);
-router.delete('/:id', ClerkExpressWithAuth(), deleteLocation);
+router.delete('/:locationId', ClerkExpressWithAuth(), deleteLocation);
 
 module.exports = router;
