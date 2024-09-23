@@ -5,8 +5,8 @@ module.exports = (sequelize) => {
   class Flight extends Model {
     static associate(models) {
       // Define associations here if needed
-      Flight.belongsTo(models.Trip, { foreignKey: 'tripId' });
-      Flight.belongsTo(models.User, { foreignKey: 'userId' });
+      Flight.belongsTo(models.Trip, { foreignKey: 'tripId', as: 'trip' });
+      Flight.belongsTo(models.User, { foreignKey: 'userId', as: 'flyer' });
     }
   }
 
