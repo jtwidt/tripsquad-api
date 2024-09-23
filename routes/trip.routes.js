@@ -51,3 +51,5 @@ router.delete(
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   cancelTrip
 );
+
+module.exports = router;

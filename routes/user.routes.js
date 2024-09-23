@@ -39,3 +39,5 @@ router.patch(
   ClerkExpressWithAuth({ signInUrl: '/sign-in' }),
   updateUser
 );
+
+module.exports = router;
