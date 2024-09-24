@@ -132,7 +132,24 @@ const updateLocation = async (req, res) => {
 };
 
 // DELETE LOCATION
-const deleteLocation = async (req, res) => {};
+const deleteLocation = async (req, res) => {
+  // Get the location ID from the URL
+  const { locationId } = req.params;
+
+  //   Ensure that the location exists
+  const location = await Location.findOne({ where: { id: locationId } });
+
+  //   If no location was found send an error message
+  if (!location) {
+    return res.status(400).send({ message: 'No location found' });
+  }
+
+  //   Delete the location
+  await Location.destroy({ where: { id: locationId } });
+
+  //   Send a success message back to the user
+  return res.status(200).send({ message: 'Location deleted' });
+};
 
 module.exports = {
   createLocation,
