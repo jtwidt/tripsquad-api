@@ -342,7 +342,10 @@ const getTripHotels = async (req, res) => {
 };
 
 // UPDATE HOTEL
-const updateHotel = async (req, res) => {};
+const updateHotel = async (req, res) => {
+  // Get the hotel ID from the URL
+  const {hotelId} = req.params;
+};
 
 // DELETE HOTEL
 const deleteHotel = async (req, res) => {};
