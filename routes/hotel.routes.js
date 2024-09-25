@@ -9,7 +9,7 @@ const {
   getHotelByLocation,
   getTripHotels,
   updateHotel,
-  deleteHotel,
+  cancelHotel,
 } = require('../controllers/hotel.controller');
 
 router.get('/', (req, res) => {
@@ -22,6 +22,6 @@ router.get('/location/:locationId', ClerkExpressWithAuth(), getHotelByLocation);
 router.get('/trip/:tripId', ClerkExpressWithAuth(), getTripHotels);
 router.get('/:hotelId', ClerkExpressWithAuth(), getHotelById);
 router.patch('/:hotelId', ClerkExpressWithAuth(), updateHotel);
-router.delete('/:hotelId', ClerkExpressWithAuth(), deleteHotel);
+router.delete('/:hotelId', ClerkExpressWithAuth(), cancelHotel);
 
 module.exports = router;

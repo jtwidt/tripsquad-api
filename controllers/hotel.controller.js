@@ -443,7 +443,27 @@ const updateHotel = async (req, res) => {
 };
 
 // DELETE HOTEL
-const deleteHotel = async (req, res) => {};
+const cancelHotel = async (req, res) => {
+  // Get the hotel ID from the URL
+  const { hotelId } = req.params;
+
+  // Search for the hotel
+  const hotel = await Hotel.findOne({ where: { id: hotelId } });
+
+  // If no hotel is found return an error message
+  if (!hotel) {
+    return res.status(400).send({ message: "No hotel found" });
+  }
+
+  // Update the status to canceled
+  await Hotel.update({ status: "canceled" }, { where: { id: hotelId } });
+
+  // Update all the sub reservations to canceled
+  await HotelReservation.update({ status: "canceled" }, { where: { hotelId } });
+
+  // Return a success message to the user
+  return res.status(200).send({ message: "Hotel successfully canceled" });
+};
 
 module.exports = {
   createHotel,
@@ -452,5 +472,5 @@ module.exports = {
   getHotelByLocation,
   getTripHotels,
   updateHotel,
-  deleteHotel,
+  cancelHotel,
 };
