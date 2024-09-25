@@ -10,7 +10,10 @@ module.exports = (sequelize) => {
         foreignKey: 'locationId',
         as: 'location',
       });
-      Hotel.hasMany(models.HotelReservation, { foreignKey: 'hotelId' });
+      Hotel.hasMany(models.HotelReservation, {
+        foreignKey: 'hotelId',
+        as: 'reservations',
+      });
     }
   }
 
@@ -43,7 +46,7 @@ module.exports = (sequelize) => {
         allowNull: true,
       },
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('pending', 'confirmed', 'canceled'),
         allowNull: true,
       },
     },
