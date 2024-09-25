@@ -1,6 +1,6 @@
 const { db } = require('../models');
 
-const { Hotel, HotelReservation, Trip, Location } = db;
+const { Hotel, HotelReservation, Trip, Location, User } = db;
 
 // CREATE HOTEL
 const createHotel = async (req, res) => {
@@ -258,7 +258,7 @@ const getHotelByLocation = async (req, res) => {
       {
         model: Location,
         as: 'location',
-        where: {id: location.id}
+        where: {id: location.id},
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },
@@ -287,7 +287,59 @@ const getHotelByLocation = async (req, res) => {
 };
 
 // GET HOTEL BY TRIP
-const getTripHotels = async (req, res) => {};
+const getTripHotels = async (req, res) => {
+  // Get the trip ID from the URL
+  const { tripId } = req.params;
+
+  // Get the trip matching the ID
+  const trip = await Trip.findOne({ where: { id: tripId } });
+
+  // If no trip is found send an error message
+  if (!trip) {
+    return res.status(400).send({ message: 'No trip found' });
+  }
+
+  // Find all the hotels that match the trip ID
+  const hotels = await Hotel.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        where: {id: trip.id},
+        attributes: ['tripName'],
+      },
+      {
+        model: Location,
+        as: 'location',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: HotelReservation,
+        as: 'reservations',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Return the results to the user
+  return res.status(200).send({ hotels})
+};
 
 // UPDATE HOTEL
 const updateHotel = async (req, res) => {};
