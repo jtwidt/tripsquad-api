@@ -29,8 +29,9 @@ module.exports = {
         allowNull: true,
       },
       status: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        type: Sequelize.ENUM('pending', 'confirmed', 'canceled'), // ENUM definition in migration
+        allowNull: false,
+        defaultValue: 'pending',
       },
       created_at: {
         allowNull: false,
@@ -44,5 +45,8 @@ module.exports = {
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('hotels');
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_hotel_status";'
+    );
   },
 };

@@ -5,9 +5,15 @@ module.exports = (sequelize) => {
   class Hotel extends Model {
     static associate(models) {
       // Define associations here if needed
-      Hotel.belongsTo(models.Trip, { foreignKey: 'tripId' });
-      Hotel.belongsTo(models.Location, { foreignKey: 'locationId' });
-      Hotel.hasMany(models.HotelReservation, { foreignKey: 'hotelId' });
+      Hotel.belongsTo(models.Trip, { foreignKey: 'tripId', as: 'trip' });
+      Hotel.belongsTo(models.Location, {
+        foreignKey: 'locationId',
+        as: 'location',
+      });
+      Hotel.hasMany(models.HotelReservation, {
+        foreignKey: 'hotelId',
+        as: 'reservations',
+      });
     }
   }
 
@@ -40,7 +46,7 @@ module.exports = (sequelize) => {
         allowNull: true,
       },
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('pending', 'confirmed', 'canceled'),
         allowNull: true,
       },
     },
