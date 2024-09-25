@@ -243,6 +243,47 @@ const getHotelByLocation = async (req, res) => {
   if (!location) {
     return res.status(400).send({ message: 'No location found' });
   }
+
+  // Find all the hotels that match the location ID
+  const hotels = await Hotel.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        attributes: ['tripName'],
+      },
+      {
+        model: Location,
+        as: 'location',
+        where: {id: location.id}
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: HotelReservation,
+        as: 'reservations',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Return the results to the user
+  return res.status(200).send({ hotels})
 };
 
 // GET HOTEL BY TRIP
