@@ -126,13 +126,124 @@ const createHotel = async (req, res) => {
 };
 
 // GET HOTEL BY ID
-const getHotelById = async (req, res) => {};
+const getHotelById = async (req, res) => {
+  // Get the hotel ID from the URL
+  const { hotelId } = req.params;
+
+  // Search for the hotel matching the ID
+  const hotel = await Hotel.findOne({
+    where: {
+      id: hotelId,
+    },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        attributes: ['tripName'],
+      },
+      {
+        model: Location,
+        as: 'location',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: HotelReservation,
+        as: 'reservations',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // If no hotel is found send an error message
+  if (!hotel) {
+    return res.status(400).send({ message: 'No hotel found' });
+  }
+
+  return res.status(200).send({ hotel });
+};
 
 // GET USER HOTEL RESERVATIONS
-const getUserHotelReservation = async (req, res) => {};
+const getUserHotelReservation = async (req, res) => {
+  // get the logged in users clerk ID
+  const { userId: clerkId } = req.auth;
+
+  // Get the user with the matching Clerk ID
+  const user = await User.findOne({ where: { clerkId } });
+
+  // If no user is found return an error message
+  if (!user) {
+    return res.status(400).send({ message: 'No user found' });
+  }
+
+  const hotels = await Hotel.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        attributes: ['tripName'],
+      },
+      {
+        model: Location,
+        as: 'location',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      },
+      {
+        model: HotelReservation,
+        as: 'reservations',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            where: { id: user.id },
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  return res.status(200).send({ hotels });
+};
 
 // GET HOTEL BY LOCATION
-const getHotelByLocation = async (req, res) => {};
+const getHotelByLocation = async (req, res) => {
+  // Get the location ID from the URL
+  const { locationId } = req.params;
+
+  // Get the location matching the ID
+  const location = await Location.findOne({ where: { id: locationId } });
+
+  // If no location is found send an error message
+  if (!location) {
+    return res.status(400).send({ message: 'No location found' });
+  }
+};
 
 // GET HOTEL BY TRIP
 const getTripHotels = async (req, res) => {};
