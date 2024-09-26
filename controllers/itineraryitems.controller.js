@@ -1,6 +1,6 @@
 const db = require('../models');
 
-const { ItineraryItem, ItineraryItemUser, User } = db;
+const { ItineraryItem, ItineraryItemUser, User, Trip } = db;
 
 // CREATE ITINERARY ITEM
 const createItineraryItem = async (req, res) => {
@@ -83,10 +83,61 @@ const createItineraryItem = async (req, res) => {
 };
 
 // GET ALL ITINERARY ITEMS
-const getAllItineraryItems = async (req, res) => {};
+const getAllItineraryItems = async (req, res) => {
+  // Get all the itinerary items
+  const itineraryItems = await ItineraryItems.findAll();
+
+  // Send the results back to the user
+  return res.status(200).send({ itineraryItems });
+};
 
 // GET ALL TRIP ITINERARY ITEMS
-const getTripItineraryItems = async (req, res) => {};
+const getTripItineraryItems = async (req, res) => {
+  // Get the trip ID from the URL
+  const { tripId } = req.params;
+
+  // Make sure that the trip actually exists
+  const trip = await Trip.findOne({ where: { id: tripId } });
+
+  // If the trip isn't found send an error message
+  if (!trip) {
+    return res.status(400).send({ message: 'No trip found' });
+  }
+
+  // Find all the itinerary items matching the trip ID
+  const itineraryItems = await ItineraryItem.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        where: { tripId },
+        attributes: ['tripName'],
+      },
+      {
+        model: ItineraryItemUser,
+        as: 'participants',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Return the found items to the user
+  return res.status(200).send({ itineraryItems });
+};
 
 // GET TRIP DAY ITINERARY ITEMS
 const getTripDayItineraryItems = async (req, res) => {};
