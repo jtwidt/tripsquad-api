@@ -7,8 +7,12 @@ module.exports = (sequelize) => {
       // Define associations here
       ItineraryItemUser.belongsTo(models.ItineraryItem, {
         foreignKey: 'itineraryItemId',
+        as: 'itineraryItem',
       });
-      ItineraryItemUser.belongsTo(models.User, { foreignKey: 'userId' });
+      ItineraryItemUser.belongsTo(models.User, {
+        foreignKey: 'userId',
+        as: 'user',
+      });
     }
   }
 

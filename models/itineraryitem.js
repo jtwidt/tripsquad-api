@@ -5,7 +5,10 @@ module.exports = (sequelize) => {
   class ItineraryItem extends Model {
     static associate(models) {
       // Define associations here if needed
-      ItineraryItem.belongsTo(models.Trip, { foreignKey: 'tripId' });
+      ItineraryItem.belongsTo(models.Trip, {
+        foreignKey: 'tripId',
+        as: 'trip',
+      });
       ItineraryItem.hasMany(models.ItineraryItemUser, {
         foreignKey: 'itineraryItemId',
         as: 'participants',

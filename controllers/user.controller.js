@@ -84,7 +84,7 @@ const deleteUser = async (req, res) => {
   }
 
   // Delete the user and send a success message once complete
-  await User.destroy({ where: { clerkId } });
+  await User.destroy({ where: { id: validUser.id } });
 
   return res.status(200).send({ message: 'User deleted' });
 };
