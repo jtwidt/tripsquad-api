@@ -343,7 +343,69 @@ const getTripUserDayItineraryItems = async (req, res) => {
 };
 
 // UPDATE ITINERARY ITEMS
-const updateItineraryItem = async (req, res) => {};
+const updateItineraryItem = async (req, res) => {
+  // Get the item ID from the URL
+  const { itemId } = req.params;
+
+  // Get the item that matches the given ID
+  let item = await ItineraryItem.findOne({ where: { id: itemId } });
+
+  // If no item was found send an error message
+  if (!item) {
+    return res.status(400).send({ message: 'No itinerary item found' });
+  }
+
+  // Get the updated properties from the request
+  let { type, name, startTime, endTime, confirmationNumber } = req.body;
+
+  // Create a JS date object from the given datetimes
+  startTime = new Date(startTime);
+  endTime = new Date(endTime);
+
+  // Create the new update object
+  const updateObject = {
+    type,
+    name,
+    startTime,
+    endTime,
+    confirmationNumber,
+  };
+
+  // Update the itinerary item
+  await ItineraryItem.update(updateObject, { where: { id: item.id } });
+
+  item = await ItineraryItems.findOne({
+    where: { id: item.id },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Trip,
+        as: 'trip',
+        attributes: ['tripName'],
+      },
+      {
+        model: ItineraryItemUser,
+        as: 'participants',
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  return res.status(200).send({ item });
+};
 
 // DELETE ITINERARY ITEMS
 const deleteItineraryItems = async (req, res) => {};
