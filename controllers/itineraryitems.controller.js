@@ -408,7 +408,35 @@ const updateItineraryItem = async (req, res) => {
 };
 
 // DELETE ITINERARY ITEMS
-const deleteItineraryItems = async (req, res) => {};
+const deleteItineraryItems = async (req, res) => {
+  // Get the item ID from the URL
+  const { itemId } = req.params;
+
+  // Find the item with the matching ID
+  const validItem = await ItineraryItem.findOne({
+    where: { id: itemId },
+  });
+
+  // If no item was found send an error message
+  if (!item) {
+    return res.status(400).send({ message: 'No itinerary item found' });
+  }
+
+  // Delete the item
+  await ItineraryItem.destroy({
+    where: { id: itemId },
+  });
+
+  // Delete associated item user entries
+  await ItineraryItemUser.destroy({
+    where: { itineraryItemId: itemId },
+  });
+
+  // Return a success message
+  return res
+    .status(200)
+    .send({ message: 'Itinerary item successfully deleted' });
+};
 
 module.exports = {
   createItineraryItem,
